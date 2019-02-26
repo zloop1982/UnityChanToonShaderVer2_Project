@@ -7,11 +7,19 @@
 //#pragma multi_compile _IS_CLIPPING_OFF _IS_CLIPPING_MODE  _IS_CLIPPING_TRANSMODE
 //#pragma multi_compile _IS_PASS_FWDBASE _IS_PASS_FWDDELTA
 //
-
+#if UCTS_LWRP
+//          defined in cginc like like this:
+//            TEXTURE2D(_MainTex);       SAMPLER(sampler_MainTex);
+//            float4 _MainTex_ST;
+#else
             uniform sampler2D _MainTex; uniform float4 _MainTex_ST;
+#endif
             uniform float4 _BaseColor;
             //v.2.0.5
+#if UCTS_LWRP
+#else
             uniform float4 _Color;
+#endif
             uniform fixed _Use_BaseAs1st;
             uniform fixed _Use_1stAs2nd;
             //
@@ -80,7 +88,10 @@
             uniform float _CameraRolling_Stabilizer;
             uniform fixed _BlurLevelMatcap;
             uniform fixed _Inverse_MatcapMask;
+#if UCTS_LWRP
+#else
             uniform float _BumpScale;
+#endif
             uniform float _BumpScaleMatcap;
             //Emissive
             uniform sampler2D _Emissive_Tex; uniform float4 _Emissive_Tex_ST;
@@ -131,8 +142,16 @@
                 float3 normalDir : TEXCOORD2;
                 float3 tangentDir : TEXCOORD3;
                 float3 bitangentDir : TEXCOORD4;
+#if UCTS_LWRP
+		DECLARE_LIGHTMAP_OR_SH(lightmapUV, vertexSH, 5);
+		half4 fogFactorAndVertexLight   : TEXCOORD6; // x: fogFactor, yzw: vertex light
+# ifdef _MAIN_LIGHT_SHADOWS
+		float4 shadowCoord              : TEXCOORD7;
+# endif
+#else
                 LIGHTING_COORDS(5,6)
                 UNITY_FOG_COORDS(7)
+#endif
             };
             VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
@@ -143,8 +162,28 @@
                 o.posWorld = mul(unity_ObjectToWorld, v.vertex);
                 float3 lightColor = _LightColor0.rgb;
                 o.pos = UnityObjectToClipPos( v.vertex );
-                UNITY_TRANSFER_FOG(o,o.pos);
+#ifdef UCTS_LWRP
+	        float3 positionWS =  TransformObjectToWorld(v.vertex);
+	        float4 positionCS = TransformWorldToHClip(positionWS);
+                half3 vertexLight = VertexLighting(o.posWorld, o.normalDir);
+                half fogFactor = ComputeFogFactor(positionCS.z);
+		float2 lightmaUV = float2(0.0, 0.0);
+                OUTPUT_LIGHTMAP_UV(lightmapUV, unity_LightmapST, lightmapUV);
+                OUTPUT_SH(o.normalDir.xyz, o.vertexSH);
+
+                o.fogFactorAndVertexLight = half4(fogFactor, vertexLight);
+  #if defined(_MAIN_LIGHT_SHADOWS) && !defined(_RECEIVE_SHADOWS_OFF)
+    #if SHADOWS_SCREEN
+		o.shadowCoord = ComputeScreenPos(positionCS);
+    #else
+		o.shadowCoord = TransformWorldToShadowCoord(o.posWorld);
+    #endif
+  #endif
+
+#else		
+                UNITY_TRANSFER_FOG(o,o.pos); 
                 TRANSFER_VERTEX_TO_FRAGMENT(o)
+#endif		
                 return o;
             }
             float4 frag(VertexOutput i, fixed facing : VFACE) : SV_TARGET {
@@ -153,11 +192,19 @@
                 float3 viewDirection = normalize(_WorldSpaceCameraPos.xyz - i.posWorld.xyz);
                 float2 Set_UV0 = i.uv0;
                 //v.2.0.6
-                //float3 _NormalMap_var = UnpackNormal(tex2D(_NormalMap,TRANSFORM_TEX(Set_UV0, _NormalMap)));
+#ifdef UCTS_LWRP
+				float3 _NormalMap_var = UnpackNormal(tex2D(_NormalMap,TRANSFORM_TEX(Set_UV0, _NormalMap)));
+#else
                 float3 _NormalMap_var = UnpackScaleNormal(tex2D(_NormalMap,TRANSFORM_TEX(Set_UV0, _NormalMap)), _BumpScale);
+#endif
                 float3 normalLocal = _NormalMap_var.rgb;
                 float3 normalDirection = normalize(mul( normalLocal, tangentTransform )); // Perturbed normals
+#ifdef UCTS_LWRP
+//                float4 _MainTex_var = SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,TRANSFORM_TEX(Set_UV0, _MainTex));
+                float4 _MainTex_var = UCTS_TEXTURE2D(_MainTex,Set_UV0);
+#else
                 float4 _MainTex_var = tex2D(_MainTex,TRANSFORM_TEX(Set_UV0, _MainTex));
+#endif
 //v.2.0.4
 #ifdef _IS_CLIPPING_MODE
 //DoubleShadeWithFeather_Clipping
@@ -177,7 +224,15 @@
 //DoubleShadeWithFeather
 #endif
 
-                UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
+#ifdef UCTS_LWRP
+		half attenuation = 1.0; 
+# ifdef _MAIN_LIGHT_SHADOWS
+		Light mainLight = GetMainLight(i.shadowCoord);
+		attenuation = mainLight.shadowAttenuation;
+# endif
+#else
+		UNITY_LIGHT_ATTENUATION(attenuation, i, i.posWorld.xyz);
+#endif
 
 //v.2.0.4
 #ifdef _IS_PASS_FWDBASE
@@ -272,8 +327,11 @@
                 float2 _Rot_MatCapNmUV_var_piv = float2(0.5,0.5);
                 float2 _Rot_MatCapNmUV_var = (mul(Set_UV0-_Rot_MatCapNmUV_var_piv,float2x2( _Rot_MatCapNmUV_var_cos, -_Rot_MatCapNmUV_var_sin, _Rot_MatCapNmUV_var_sin, _Rot_MatCapNmUV_var_cos))+_Rot_MatCapNmUV_var_piv);
                 //V.2.0.6
-                //float3 _NormalMapForMatCap_var = UnpackNormal(tex2D(_NormalMapForMatCap,TRANSFORM_TEX(_Rot_MatCapNmUV_var, _NormalMapForMatCap)));
+#ifdef UCTS_LWRP	// Todo. not ready for 2.0.6
+                float3 _NormalMapForMatCap_var = UnpackNormal(tex2D(_NormalMapForMatCap,TRANSFORM_TEX(_Rot_MatCapNmUV_var, _NormalMapForMatCap)));
+#else
                 float3 _NormalMapForMatCap_var = UnpackScaleNormal(tex2D(_NormalMapForMatCap,TRANSFORM_TEX(_Rot_MatCapNmUV_var, _NormalMapForMatCap)),_BumpScaleMatcap);
+#endif
                 //v.2.0.5: MatCap with camera skew correction
                 float3 viewNormal = (mul(UNITY_MATRIX_V, float4(lerp( i.normalDir, mul( _NormalMapForMatCap_var.rgb, tangentTransform ).rgb, _Is_NormalMapForMatCap ),0))).rgb;
                 float3 NormalBlend_MatcapUV_Detail = viewNormal.rgb * float3(-1,-1,1);
@@ -376,6 +434,10 @@
                 	fixed4 finalRGBA = fixed4(finalColor * Set_Opacity,0);
 	#endif
 #endif
+
+#ifdef  UCTS_LWRP
+#else
                 UNITY_APPLY_FOG(i.fogCoord, finalRGBA);
+#endif		
                 return finalRGBA;
             }
