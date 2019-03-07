@@ -4,8 +4,9 @@
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_Name: ToonShader_Main
   m_Shader: {fileID: 4800000, guid: 9baf30ce95c751649b14d96da3a4b4d5, type: 3}
   m_ShaderKeywords: _ISOUTLINE_ON _IS_BLENDADDTOHICOLOR_ON _IS_BLENDADDTOMATCAP_ON
@@ -159,7 +160,7 @@ Material:
     - _Unlit_Intensity: 2
     - _Use_1stAs2nd: 1
     - _Use_BaseAs1st: 0
-    - _simpleUI: 0
+    - _simpleUI: 2
     - _utsTechnique: 0
     - _utsVersion: 2.06
     m_Colors:
