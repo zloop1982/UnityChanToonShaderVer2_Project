@@ -13,6 +13,7 @@
 - [UTS2各シェーダーの使い分け](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#uts2%E5%90%84%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC%E3%81%AE%E4%BD%BF%E3%81%84%E5%88%86%E3%81%91)
   - [UnityChanToonShaderルートフォルダ内のシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#unitychantoonshader%E3%83%AB%E3%83%BC%E3%83%88%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
   - [UnityChanToonShader/NoOutlineフォルダ内のシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#unitychantoonshadernooutline%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
+    - [半透明マテリアル向けのTransparentシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#%E5%8D%8A%E9%80%8F%E6%98%8E%E3%83%9E%E3%83%86%E3%83%AA%E3%82%A2%E3%83%AB%E5%90%91%E3%81%91%E3%81%AEtransparent%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
   - [UnityChanToonShader/AngelRingフォルダ内のシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#unitychantoonshaderangelring%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
   - [UnityChanToonShader/Mobileフォルダ内のシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#unitychantoonshadermobile%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
   - [UnityChanToonShader/Tessellationフォルダ内のシェーダー](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_ja.md#unitychantoonshadertessellation%E3%83%95%E3%82%A9%E3%83%AB%E3%83%80%E5%86%85%E3%81%AE%E3%82%B7%E3%82%A7%E3%83%BC%E3%83%80%E3%83%BC)
@@ -239,6 +240,8 @@ UTS2のアウトラインは、専用テクスチャを使ったアウトライ�
 
 アウトライン機能を持たないぶん、描画パスがひとつ少なくなりますので、アウトラインの必要がないデザインだったり、別途 [PSOFT Pencil+ 4 Line for Unity](https://www.psoft.co.jp/jp/product/pencil/unity/) のような高精度のトゥーンラインシェーダーを使用したい場合には、こちらを選ぶとよいでしょう。  
 
+### ・半透明マテリアル向けのTransparentシェーダー
+
 <img width = "600" src="Images_jpg/ToonColor_Transparent.jpg">
 
 `NoOutline`系シェーダーの中に、最後に`Transparent`という名前ブロックを持つシェーダーがあります。  
@@ -247,6 +250,13 @@ UTS2のアウトラインは、専用テクスチャを使ったアウトライ�
 <img width = "800" src="Images_jpg/CheekMaterialSetting.jpg">
 
 ↑頬染め用マテリアルの設定例  
+
+[![](https://img.youtube.com/vi/oAzgUJxP2y4/0.jpg)](https://www.youtube.com/watch?v=oAzgUJxP2y4)
+
+↑ Custom Render Queueの設定の仕方  
+
+UTS2 v.2.0.7を使って、カスタムレンダーキューを各マテリアルに設定する方法を解説します。  
+特に半透明（Transparent）系のマテリアルを正確に表示したい場合には、カスタムレンダーキューの調整が欠かせません。本ムービーで使用しているサンプルシーンは、UTS2のサンプルプロジェクトに含まれていますので、実際に手で動かして確認することができます。  
 
 
 ## ●UnityChanToonShader/AngelRingフォルダ内のシェーダー

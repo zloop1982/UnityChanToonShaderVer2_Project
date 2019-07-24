@@ -13,6 +13,7 @@
 - [Using the Different Shaders in UTS2](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#using-the-different-shaders-in-uts2)
   - [The Shaders in the UnityChanToonShader Root Folder](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#the-shaders-in-the-unitychantoonshader-root-folder)
   - [The Shaders in the UnityChanToonShader/NoOutline Folder](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#the-shaders-in-the-unitychantoonshadernooutline-folder)
+    - [Transparent shaders for transparency materials](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#transparent-shaders-for-transparency-materials)
   - [The Shaders in the UnityChanToonShader/AngelRing Folder](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#the-shaders-in-the-unitychantoonshaderangelring-folder)
   - [The Shaders in the UnityChanToonShader/Mobile Folder](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#the-shaders-in-the-unitychantoonshadermobile-folder)
   - [The Shaders in the UnityChanToonShader/Tessellation Folder](https://github.com/unity3d-jp/UnityChanToonShaderVer2_Project/blob/master/Manual/UTS2_Manual_en.md#the-shaders-in-the-unitychantoonshadertessellation-folder)
@@ -233,6 +234,8 @@ The shaders in the `NoOutline` folder have `ToonColor` at the front of their nam
 
 Parts without the outline function will have one less drawing pass, so these shaders are ideal for designs that do not require outlines or when using high accuracy toon line shaders like [PSOFT Pencil+ 4 Line for Unity](https://www.psoft.co.jp/jp/product/pencil/unity/).  
 
+### ・Transparent shaders for transparency materials
+
 <img width = "600" src="Images_jpg/ToonColor_Transparent.jpg">
 
 Some of the `NoOutline` shaders have the `Transparent` name block at the end of their names.  
@@ -241,6 +244,13 @@ These are **special transparency shaders**. They are useful for parts meant to h
 <img width = "800" src="Images_jpg/CheekMaterialSetting.jpg">
 
 ↑Sample setting for Blush material.  
+
+[![](https://img.youtube.com/vi/oAzgUJxP2y4/0.jpg)](https://www.youtube.com/watch?v=oAzgUJxP2y4)
+
+↑ How To Set Custom Render Queue into UTS2 materials  
+
+I show you how to set custom render cues for each material using UTS2 v. 2.0.7.  
+Custom render cue adjustments are essential, especially if you want to accurately display transparent materials. The sample scene used in this movie is included in the UTS2 sample project, so you can move it and check it by hand.  
 
 
 ## ●The Shaders in the UnityChanToonShader/AngelRing Folder
